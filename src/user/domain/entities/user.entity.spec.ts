@@ -31,4 +31,34 @@ describe('UserEntity unit test', () => {
       expect(sut.props.createAt).toBeInstanceOf(Date);
     });
   });
+  describe('Getter methods', () => {
+    it('should return the correct name', () => {
+      const name = sut.props.name;
+      expect(name).toBeDefined();
+      expect(name).toEqual(props.name);
+      expect(typeof name).toEqual('string');
+    });
+
+    it('should return the correct email', () => {
+      const email = sut.props.email;
+      expect(email).toBeDefined();
+      expect(email).toEqual(props.email);
+      expect(typeof email).toEqual('string');
+    });
+
+    it('should return the correct password', () => {
+      const password = sut.props.password;
+      expect(password).toBeDefined();
+      expect(password).toEqual(props.password);
+      expect(typeof password).toEqual('string');
+    });
+  });
+  describe('createAt property', () => {
+    it('should be defined', () => {
+      expect(sut.props.createAt).toBeDefined();
+    });
+    it('should be an instance of Date', () => {
+      expect(sut.props.createAt).toBeInstanceOf(Date);
+    });
+  });
 });
