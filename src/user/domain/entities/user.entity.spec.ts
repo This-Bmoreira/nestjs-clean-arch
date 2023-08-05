@@ -49,6 +49,17 @@ describe('UserEntity unit test', () => {
       expect(typeof password).toEqual('string');
     });
   });
+  describe('Setter methods', () => {
+    it('should set the name field', () => {
+      sut['name'] = 'any name';
+      expect(sut.props.name).toEqual('any name');
+    });
+    it('should set the password field', () => {
+      sut['password'] = 'any password';
+      expect(sut.props.password).toEqual('any password');
+      expect(typeof sut.props.password).toBe('string');
+    });
+  });
   describe('createAt property', () => {
     it('should be defined', () => {
       expect(sut.props.createAt).toBeDefined();
