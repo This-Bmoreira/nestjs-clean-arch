@@ -68,4 +68,15 @@ describe('UserEntity unit test', () => {
       expect(sut.props.createAt).toBeInstanceOf(Date);
     });
   });
+  describe('update methods', () => {
+    it('should update the user name', () => {
+      sut.updateUserProp('other name');
+      expect(sut.props.name).toEqual('other name');
+    });
+
+    it('should update the user password', () => {
+      sut.updateUserPassword('other password');
+      expect(sut.props.password).toEqual('other password');
+    });
+  });
 });
