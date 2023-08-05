@@ -35,4 +35,11 @@ export class UserEntity extends Entity<UserProps> {
   get createAt(): Date | undefined {
     return this.props.createAt;
   }
+
+  updateUserProp(value: string): void {
+    this.name = value;
+  }
+  updateUserPassword(value: string): void {
+    this.password = value;
+  }
 }
