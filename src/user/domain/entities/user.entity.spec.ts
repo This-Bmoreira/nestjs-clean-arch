@@ -6,11 +6,15 @@ describe('UserEntity unit test', () => {
   let props: UserProps;
 
   beforeEach(() => {
+    UserEntity.validateProps = jest.fn();
     props = UserDataBuilder({});
     sut = new UserEntity(props);
   });
 
   describe('Constructor method', () => {
+    it('should call validateProps during construction', () => {
+      expect(UserEntity.validateProps).toHaveBeenCalled();
+    });
     it('should set the correct name', () => {
       expect(sut.props.name).toEqual(props.name);
     });
@@ -61,6 +65,9 @@ describe('UserEntity unit test', () => {
     });
   });
   describe('createdAt property', () => {
+    it('should call validateProps during construction', () => {
+      expect(UserEntity.validateProps).toHaveBeenCalled();
+    });
     it('should be defined', () => {
       expect(sut.props.createdAt).toBeDefined();
     });
@@ -69,6 +76,9 @@ describe('UserEntity unit test', () => {
     });
   });
   describe('update methods', () => {
+    it('should call validateProps during construction', () => {
+      expect(UserEntity.validateProps).toHaveBeenCalled();
+    });
     it('should update the user name', () => {
       sut.updateUserName('other name');
       expect(sut.props.name).toEqual('other name');
