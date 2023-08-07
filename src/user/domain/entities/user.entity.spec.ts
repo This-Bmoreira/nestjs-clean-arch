@@ -23,8 +23,8 @@ describe('UserEntity unit test', () => {
       expect(sut.props.password).toEqual(props.password);
     });
 
-    it('should set createAt property to an instance of Date', () => {
-      expect(sut.props.createAt).toBeInstanceOf(Date);
+    it('should set createdAt property to an instance of Date', () => {
+      expect(sut.props.createdAt).toBeInstanceOf(Date);
     });
   });
   describe('Getter methods', () => {
@@ -60,17 +60,17 @@ describe('UserEntity unit test', () => {
       expect(typeof sut.props.password).toBe('string');
     });
   });
-  describe('createAt property', () => {
+  describe('createdAt property', () => {
     it('should be defined', () => {
-      expect(sut.props.createAt).toBeDefined();
+      expect(sut.props.createdAt).toBeDefined();
     });
     it('should be an instance of Date', () => {
-      expect(sut.props.createAt).toBeInstanceOf(Date);
+      expect(sut.props.createdAt).toBeInstanceOf(Date);
     });
   });
   describe('update methods', () => {
     it('should update the user name', () => {
-      sut.updateUserProp('other name');
+      sut.updateUserName('other name');
       expect(sut.props.name).toEqual('other name');
     });
 
