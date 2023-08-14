@@ -2,6 +2,7 @@ import { Entity } from '../../domain/entities/entity';
 import { RepositoryInterface } from './repository-contracts';
 
 export type SortDirection = 'asc' | 'desc';
+
 export type SearchProps<Filter = string> = {
   page?: number;
   perPage?: number;
@@ -9,23 +10,25 @@ export type SearchProps<Filter = string> = {
   sortDir?: SortDirection | null;
   filter?: Filter | null;
 };
-export type SearchResultProps<E extends Entity<unknown>, Filter> = {
+
+export type SearchResultProps<E extends Entity<any>, Filter> = {
   items: E[];
   total: number;
   currentPage: number;
   perPage: number;
   sort: string | null;
-  sortDir: SortDirection | null;
+  sortDir: string | null;
   filter: Filter | null;
 };
-export class SearchParams {
+
+export class SearchParams<Filter = string> {
   protected _page: number;
   protected _perPage = 15;
   protected _sort: string | null;
   protected _sortDir: SortDirection | null;
-  protected _filter: string | null;
+  protected _filter: Filter | null;
 
-  constructor(props: SearchProps = {}) {
+  constructor(props: SearchProps<Filter> = {}) {
     this.page = props.page;
     this.perPage = props.perPage;
     this.sort = props.sort;
@@ -56,7 +59,6 @@ export class SearchParams {
     ) {
       _perPage = this._perPage;
     }
-
     this._perPage = _perPage;
   }
 
@@ -78,22 +80,25 @@ export class SearchParams {
     const dir = `${value}`.toLowerCase();
     this._sortDir = dir !== 'asc' && dir !== 'desc' ? 'desc' : dir;
   }
-  get filter() {
+  get filter(): Filter | null {
     return this._filter;
   }
-  private set filter(value: string | null) {
+  private set filter(value: Filter | null) {
     this._filter =
-      value === null || value === undefined || value === '' ? null : `${value}`;
+      value === null || value === undefined || value === ''
+        ? null
+        : (`${value}` as any);
   }
 }
-export class SearchResult<E extends Entity<unknown>, Filter = string> {
+
+export class SearchResult<E extends Entity<any>, Filter = string> {
   readonly items: E[];
   readonly total: number;
   readonly currentPage: number;
   readonly perPage: number;
   readonly lastPage: number;
   readonly sort: string | null;
-  readonly sortDir: SortDirection | null;
+  readonly sortDir: string | null;
   readonly filter: Filter | null;
 
   constructor(props: SearchResultProps<E, Filter>) {
@@ -106,6 +111,7 @@ export class SearchResult<E extends Entity<unknown>, Filter = string> {
     this.sortDir = props.sortDir ?? null;
     this.filter = props.filter ?? null;
   }
+
   toJSON(forceEntity = false) {
     return {
       items: forceEntity ? this.items.map((item) => item.toJSON()) : this.items,
@@ -120,10 +126,11 @@ export class SearchResult<E extends Entity<unknown>, Filter = string> {
   }
 }
 export interface SearchRepositoryInterface<
-  E extends Entity<unknown>,
+  E extends Entity<any>,
   Filter = string,
-  SearchInput = SearchParams,
+  SearchInput = SearchParams<Filter>,
   SearchOutput = SearchResult<E, Filter>,
 > extends RepositoryInterface<E> {
+  sortableFields: string[];
   search(props: SearchInput): Promise<SearchOutput>;
 }
