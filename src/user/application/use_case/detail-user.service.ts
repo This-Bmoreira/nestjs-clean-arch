@@ -1,3 +1,4 @@
+import { ApplicationAction } from '../../../shared/application/use_case/use-case';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { OutputUser } from '../dto/output-user.dto';
 
@@ -8,7 +9,7 @@ export namespace DetailUserService {
 
   export type Output = OutputUser;
 
-  export class UserProfile {
+  export class UserProfile implements ApplicationAction<Input, Output> {
     constructor(private userRepository: UserRepository.Repository) {}
 
     async findOne(input: Input): Promise<Output> {

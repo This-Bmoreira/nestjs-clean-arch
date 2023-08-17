@@ -1,3 +1,4 @@
+import { ApplicationAction } from '../../../shared/application/use_case/use-case';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { BcryptPasswordHasher } from '../../provider/hash-provider/bcryptjs-hash-provider';
@@ -13,7 +14,7 @@ export namespace SignupService {
 
   export type Output = OutputUser;
 
-  export class Create {
+  export class Create implements ApplicationAction<Input, Output> {
     constructor(
       private userRepository: UserRepository.Repository,
       private hashProvider: BcryptPasswordHasher,
