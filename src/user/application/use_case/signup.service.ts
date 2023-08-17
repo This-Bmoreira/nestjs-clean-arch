@@ -1,6 +1,7 @@
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { BcryptPasswordHasher } from '../../provider/hash-provider/bcryptjs-hash-provider';
+import { OutputUser } from '../dto/output-user.dto';
 import { BadRequestError } from '../error/bad-request-error';
 
 export namespace SignupService {
@@ -10,13 +11,7 @@ export namespace SignupService {
     password: string;
   };
 
-  export type Output = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    createdAt: Date;
-  };
+  export type Output = OutputUser;
 
   export class Create {
     constructor(
