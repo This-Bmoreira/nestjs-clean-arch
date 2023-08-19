@@ -4,4 +4,5 @@ export interface ApplicationAction<Input, Output> {
   findAll?(input: Input): Promise<Output>;
   update?(input: Input): Promise<Output>;
   remove?(input: Input): Promise<Output>;
+  executeSignIn?(input: Input): Promise<Output>;
 }
