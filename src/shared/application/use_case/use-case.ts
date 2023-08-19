@@ -3,4 +3,5 @@ export interface ApplicationAction<Input, Output> {
   findOne?(input: Input): Output | Promise<Output>;
   findAll?(input: Input): Promise<Output>;
   update?(input: Input): Promise<Output>;
+  remove?(input: Input): Promise<Output>;
 }
