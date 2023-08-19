@@ -1,6 +1,6 @@
 import { ApplicationAction } from '../../../shared/application/use_case/use-case';
 import { UserRepository } from '../../domain/repository/user.repository';
-import { OutputUser } from '../dto/output-user.dto';
+import { OutputUser, UserOutputMapper } from '../dto/output-user.dto';
 
 export namespace DetailUserService {
   export type Input = {
@@ -14,7 +14,7 @@ export namespace DetailUserService {
 
     async findOne(input: Input): Promise<Output> {
       const entity = await this.userRepository.findOne(input.id);
-      return entity.toJSON();
+      return UserOutputMapper.toOutput(entity);
     }
   }
 }

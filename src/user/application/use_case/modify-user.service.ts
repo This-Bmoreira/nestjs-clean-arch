@@ -18,7 +18,7 @@ export namespace ModifyUserService {
 
     async update(input: Input): Promise<Output> {
       if (!input.name) {
-        throw new BadRequestError('Name not provided'); // Corrected typo here
+        throw new BadRequestError('Name not provided');
       }
       const entity = await this.userRepository.findOne(input.id);
       entity.updateUserName(input.name);

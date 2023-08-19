@@ -2,7 +2,7 @@ import { ApplicationAction } from '../../../shared/application/use_case/use-case
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repository/user.repository';
 import { BcryptPasswordHasher } from '../../provider/hash-provider/bcryptjs-hash-provider';
-import { OutputUser } from '../dto/output-user.dto';
+import { OutputUser, UserOutputMapper } from '../dto/output-user.dto';
 import { BadRequestError } from '../error/bad-request-error';
 
 export namespace SignupService {
@@ -36,7 +36,7 @@ export namespace SignupService {
 
       await this.userRepository.create(entity);
 
-      return entity.toJSON();
+      return UserOutputMapper.toOutput(entity);
     }
   }
 }
