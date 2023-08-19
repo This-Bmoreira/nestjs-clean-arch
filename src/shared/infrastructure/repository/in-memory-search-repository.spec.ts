@@ -1,4 +1,4 @@
-import { Entity } from '@/shared/domain/entities/entity';
+import { Entity } from '../../domain/entities/entity';
 import { InMemorySearchRepository } from './in-memory-search-repository';
 import { SearchParams, SearchResult } from './search-repository-contracts';
 
