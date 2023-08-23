@@ -8,7 +8,7 @@ export class UserModelMapper {
       name: model.name,
       email: model.email,
       password: model.password,
-      createAt: model.createdAt,
+      createdAt: model.createdAt,
     };
     try {
       return new UserEntity(data, model.id);
