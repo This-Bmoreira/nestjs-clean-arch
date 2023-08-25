@@ -25,6 +25,7 @@ import { SignInDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
 import { PasswordModificationDto } from './dto/update-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserPresenter } from './presentation/user.presenter';
 
 @ApiTags('user')
 @Controller('user')
@@ -50,17 +51,23 @@ export class UserController {
   @Inject(DetailUserService.UserProfile)
   private userProfile: DetailUserService.UserProfile;
 
+  static userToResponse(output: OutputUser) {
+    return new UserPresenter(output);
+  }
+
   @ApiOperation({ summary: 'Create a new user' })
   @Post()
-  async createUser(@Body() signupDto: SignupDto): Promise<OutputUser> {
-    return this.signupCreate.executeSignup(signupDto);
+  async createUser(@Body() signupDto: SignupDto) {
+    const output = await this.signupCreate.executeSignup(signupDto);
+    return UserController.userToResponse(output);
   }
 
   @ApiOperation({ summary: 'User login' })
   @HttpCode(200)
   @Post('login')
-  async loginUser(@Body() signInDto: SignInDto): Promise<OutputUser> {
-    return this.signIn.executeSignIn(signInDto);
+  async loginUser(@Body() signInDto: SignInDto) {
+    const output = await this.signIn.executeSignIn(signInDto);
+    return UserController.userToResponse(output);
   }
 
   @ApiOperation({ summary: 'Get all users' })
@@ -72,7 +79,8 @@ export class UserController {
   @ApiOperation({ summary: 'Get a user by ID' })
   @Get(':id')
   async getUserById(@Param('id') id: string) {
-    return this.userProfile.findOne({ id });
+    const output = await this.userProfile.findOne({ id });
+    return UserController.userToResponse(output);
   }
 
   @ApiOperation({ summary: 'Update a user by ID' })
@@ -81,7 +89,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.modifyUserProfile.update({ id, ...updateUserDto });
+    const output = await this.modifyUserProfile.update({
+      id,
+      ...updateUserDto,
+    });
+    return UserController.userToResponse(output);
   }
 
   @ApiOperation({ summary: 'Update user password by ID' })
@@ -90,7 +102,11 @@ export class UserController {
     @Param('id') id: string,
     @Body() passwordModificationDto: PasswordModificationDto,
   ) {
-    return this.passwordModification.update({ id, ...passwordModificationDto });
+    const output = await this.passwordModification.update({
+      id,
+      ...passwordModificationDto,
+    });
+    return UserController.userToResponse(output);
   }
 
   @ApiOperation({ summary: 'Delete a user by ID' })
