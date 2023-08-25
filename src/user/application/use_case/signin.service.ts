@@ -35,7 +35,6 @@ export namespace SignInService {
       if (!hashPasswordMatcher) {
         throw new InvalidCredentialsError('Invalid credentials');
       }
-      await this.userRepository.create(entity);
 
       return UserOutputMapper.toOutput(entity);
     }
