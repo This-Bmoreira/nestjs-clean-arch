@@ -1,4 +1,5 @@
 import { OutputUser } from '../application/dto/output-user.dto';
+import { UserPresenter } from './presentation/user.presenter';
 import { UserController } from './user.controller';
 
 describe('UserController unit test', () => {
@@ -35,9 +36,9 @@ describe('UserController unit test', () => {
       };
       userController['signupCreate'] = mockSignupService as any;
 
-      const result = await userController.createUser(signupInput);
-
-      expect(result).toMatchObject(outputUser);
+      const presenter = await userController.createUser(signupInput);
+      expect(presenter).toBeInstanceOf(UserPresenter);
+      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
       expect(mockSignupService.executeSignup).toHaveBeenCalledWith(signupInput);
     });
   });
@@ -54,9 +55,9 @@ describe('UserController unit test', () => {
       };
       userController['signIn'] = mockSignInService as any;
 
-      const result = await userController.loginUser(signinInput);
-
-      expect(result).toMatchObject(outputUser);
+      const presenter = await userController.loginUser(signinInput);
+      expect(presenter).toBeInstanceOf(UserPresenter);
+      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
       expect(mockSignInService.executeSignIn).toHaveBeenCalledWith(signinInput);
     });
   });
@@ -72,9 +73,10 @@ describe('UserController unit test', () => {
       };
       userController['modifyUserProfile'] = mockModifyUserService as any;
 
-      const result = await userController.updateUser(userId, updateInput);
+      const presenter = await userController.updateUser(userId, updateInput);
 
-      expect(result).toMatchObject(outputUser);
+      expect(presenter).toBeInstanceOf(UserPresenter);
+      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
       expect(mockModifyUserService.update).toHaveBeenCalledWith({
         id: userId,
         ...updateInput,
@@ -95,12 +97,13 @@ describe('UserController unit test', () => {
       userController['passwordModification'] =
         mockPasswordModificationService as any;
 
-      const result = await userController.updateUserPassword(
+      const presenter = await userController.updateUserPassword(
         userId,
         passwordUpdateInput,
       );
 
-      expect(result).toMatchObject(outputUser);
+      expect(presenter).toBeInstanceOf(UserPresenter);
+      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
       expect(mockPasswordModificationService.update).toHaveBeenCalledWith({
         id: userId,
         ...passwordUpdateInput,
@@ -129,9 +132,10 @@ describe('UserController unit test', () => {
       };
       userController['userProfile'] = mockDetailUserService as any;
 
-      const result = await userController.getUserById(userId);
+      const presenter = await userController.getUserById(userId);
 
-      expect(result).toMatchObject(outputUser);
+      expect(presenter).toBeInstanceOf(UserPresenter);
+      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
       expect(mockDetailUserService.findOne).toHaveBeenCalledWith({
         id: userId,
       });
