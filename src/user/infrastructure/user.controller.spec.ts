@@ -1,5 +1,8 @@
 import { OutputUser } from '../application/dto/output-user.dto';
-import { UserPresenter } from './presentation/user.presenter';
+import {
+  UserCollectionPresenter,
+  UserPresenter,
+} from './presentation/user.presenter';
 import { UserController } from './user.controller';
 
 describe('UserController unit test', () => {
@@ -161,9 +164,10 @@ describe('UserController unit test', () => {
         page: 1,
         perPage: 1,
       };
-      const result = await userController.getAllUsers(searchParams);
+      const presenter = await userController.getAllUsers(searchParams);
 
-      expect(result).toEqual(usersList);
+      expect(presenter).toBeInstanceOf(UserCollectionPresenter);
+      expect(presenter).toEqual(new UserCollectionPresenter(usersList));
       expect(mockDetailAllUsersService.findAll).toHaveBeenCalledWith(
         searchParams,
       );

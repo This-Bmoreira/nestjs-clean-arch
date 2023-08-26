@@ -25,7 +25,10 @@ import { SignInDto } from './dto/signin.dto';
 import { SignupDto } from './dto/signup.dto';
 import { PasswordModificationDto } from './dto/update-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserPresenter } from './presentation/user.presenter';
+import {
+  UserCollectionPresenter,
+  UserPresenter,
+} from './presentation/user.presenter';
 
 @ApiTags('user')
 @Controller('user')
@@ -55,6 +58,10 @@ export class UserController {
     return new UserPresenter(output);
   }
 
+  static listUsersToResponse(output: DetailUsersService.Output) {
+    return new UserCollectionPresenter(output);
+  }
+
   @ApiOperation({ summary: 'Create a new user' })
   @Post()
   async createUser(@Body() signupDto: SignupDto) {
@@ -73,7 +80,8 @@ export class UserController {
   @ApiOperation({ summary: 'Get all users' })
   @Get()
   async getAllUsers(@Query() searchParams: DetailUsersDto) {
-    return this.usersProfile.findAll(searchParams);
+    const output = await this.usersProfile.findAll(searchParams);
+    return UserController.listUsersToResponse(output);
   }
 
   @ApiOperation({ summary: 'Get a user by ID' })
