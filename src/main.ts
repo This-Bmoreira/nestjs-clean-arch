@@ -1,11 +1,11 @@
-import { ClassSerializerInterceptor } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { applyGlobalConfig } from './global-config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -19,7 +19,7 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  applyGlobalConfig(app);
   await app.listen(3000, '0.0.0.0');
 }
 bootstrap();
