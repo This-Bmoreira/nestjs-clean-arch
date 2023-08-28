@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { instanceToPlain } from 'class-transformer';
@@ -51,27 +51,28 @@ describe('UserController e2e test', () => {
     await repository.create(entity);
   });
 
-  describe('POST /user/:id', () => {
-    it('should create a user successfully', async () => {
+  describe('PUT /user/:id', () => {
+    it('should update a user successfully', async () => {
       updateUserDto.name = 'new_name';
       const res = await request(app.getHttpServer())
         .put(`/user/${entity._id}`)
         .send(updateUserDto)
-        .expect(200);
+        .expect(HttpStatus.OK);
 
-      expect(Object.keys(res.body)).toStrictEqual(['data']);
+      expect(res.body).toHaveProperty('data');
 
-      const user = await repository.findOne(entity.id);
-      const presenter = UserController.userToResponse(user.toJSON());
+      const updatedUser = await repository.findOne(entity.id);
+      const presenter = UserController.userToResponse(updatedUser.toJSON());
       const serialized = instanceToPlain(presenter);
 
-      expect(res.body.data).toStrictEqual(serialized);
+      expect(res.body.data).toEqual(serialized);
     });
-    it('should return 422 when sending invalid data', async () => {
+
+    it('should return 422 for invalid data', async () => {
       const res = await request(app.getHttpServer())
         .put(`/user/${entity._id}`)
         .send({})
-        .expect(422);
+        .expect(HttpStatus.UNPROCESSABLE_ENTITY);
 
       expect(res.body.error).toBe('Unprocessable Entity');
       expect(res.body.message).toEqual([
@@ -79,16 +80,18 @@ describe('UserController e2e test', () => {
         'name must be a string',
       ]);
     });
-    it('should return 422 when name is missing', async () => {
+
+    it('should return 404 when user is not found', async () => {
+      const fakeUserId = 'fake_id';
       const res = await request(app.getHttpServer())
-        .put('/user/fake_id')
+        .put(`/user/${fakeUserId}`)
         .send(updateUserDto)
-        .expect(404);
-      console.log(res.body);
-      expect({
-        statusCode: 404,
+        .expect(HttpStatus.NOT_FOUND);
+
+      expect(res.body).toEqual({
+        statusCode: HttpStatus.NOT_FOUND,
         error: 'Not Found',
-        message: 'UserModel not found using ID fake_id',
+        message: `UserModel not found using ID ${fakeUserId}`,
       });
     });
   });
