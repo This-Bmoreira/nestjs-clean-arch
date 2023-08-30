@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AuthModule } from '../../auth/infrastructure/auth.module';
 import { PrismaService } from '../../shared/infrastructure/database/prisma/prisma.service';
 import { DetailUserService } from '../application/use_case/detail-user.service';
 import { DetailUsersService } from '../application/use_case/detail-users.service';
@@ -13,6 +14,7 @@ import { UserPrismaRepository } from './database/prisma/repository/user-prisma.r
 import { UserController } from './user.controller';
 
 @Module({
+  imports: [AuthModule],
   controllers: [UserController],
   providers: [
     {
