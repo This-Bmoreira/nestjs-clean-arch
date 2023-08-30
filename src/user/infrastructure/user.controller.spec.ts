@@ -48,19 +48,23 @@ describe('UserController unit test', () => {
 
   describe('loginUser', () => {
     it('should login a user successfully', async () => {
+      const output = 'fake_token';
       const signinInput = {
         email: 'a@a.com',
         password: '1234',
       };
 
       const mockSignInService = {
-        executeSignIn: jest.fn().mockResolvedValue(outputUser),
+        executeSignIn: jest.fn().mockResolvedValue(output),
+      };
+      const mockAuthService = {
+        generateJwt: jest.fn().mockResolvedValue(output),
       };
       userController['signIn'] = mockSignInService as any;
+      userController['authService'] = mockAuthService as any;
 
-      const presenter = await userController.loginUser(signinInput);
-      expect(presenter).toBeInstanceOf(UserPresenter);
-      expect(presenter).toStrictEqual(new UserPresenter(outputUser));
+      const result = await userController.loginUser(signinInput);
+      expect(result).toEqual(output);
       expect(mockSignInService.executeSignIn).toHaveBeenCalledWith(signinInput);
     });
   });
