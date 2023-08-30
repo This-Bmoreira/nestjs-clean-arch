@@ -12,6 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthService } from '../../auth/infrastructure/auth.service';
 import { OutputUser } from '../application/dto/output-user.dto';
 import { DetailUserService } from '../application/use_case/detail-user.service';
 import { DetailUsersService } from '../application/use_case/detail-users.service';
@@ -54,6 +55,9 @@ export class UserController {
   @Inject(DetailUserService.UserProfile)
   private userProfile: DetailUserService.UserProfile;
 
+  @Inject(AuthService)
+  private authService: AuthService;
+
   static userToResponse(output: OutputUser) {
     return new UserPresenter(output);
   }
@@ -74,7 +78,7 @@ export class UserController {
   @Post('login')
   async loginUser(@Body() signInDto: SignInDto) {
     const output = await this.signIn.executeSignIn(signInDto);
-    return UserController.userToResponse(output);
+    return this.authService.generateJwt(output.id);
   }
 
   @ApiOperation({ summary: 'Get all users' })
