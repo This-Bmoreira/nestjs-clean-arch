@@ -4,9 +4,10 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { WrapperDataInterceptor } from './shared/infrastructure/interceptors/wrapper-data/wrapper-data.interceptor';
 import { ConflictErrorFilter } from './shared/infrastructure/exception-filters/conflict-error/conflict-error.filter';
+import { InvalidCredentialErrorFilter } from './shared/infrastructure/exception-filters/invalid-credential-error/invalid-credential-error-filter';
 import { NotFoundErrorFilter } from './shared/infrastructure/exception-filters/not-found-error/not-found-error.filter';
+import { WrapperDataInterceptor } from './shared/infrastructure/interceptors/wrapper-data/wrapper-data.interceptor';
 
 export function applyGlobalConfig(app: INestApplication) {
   app.useGlobalPipes(
@@ -23,4 +24,5 @@ export function applyGlobalConfig(app: INestApplication) {
   );
   app.useGlobalFilters(new ConflictErrorFilter());
   app.useGlobalFilters(new NotFoundErrorFilter());
+  app.useGlobalFilters(new InvalidCredentialErrorFilter());
 }
