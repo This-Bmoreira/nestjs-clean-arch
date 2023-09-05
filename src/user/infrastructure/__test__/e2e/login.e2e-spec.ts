@@ -140,7 +140,7 @@ describe('login End-to-End Tests', () => {
         .expect(400)
         .expect({
           statusCode: 400,
-          error: 'Bad request',
+          error: 'Bad Request',
           message: 'Invalid credentials',
         });
     });
