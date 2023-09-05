@@ -10,8 +10,10 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../../auth/infrastructure/auth.guard';
 import { AuthService } from '../../auth/infrastructure/auth.service';
 import { OutputUser } from '../application/dto/output-user.dto';
 import { DetailUserService } from '../application/use_case/detail-user.service';
@@ -82,6 +84,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get all users' })
+  @UseGuards(AuthGuard)
   @Get()
   async getAllUsers(@Query() searchParams: DetailUsersDto) {
     const output = await this.usersProfile.findAll(searchParams);
@@ -89,6 +92,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get a user by ID' })
+  @UseGuards(AuthGuard)
   @Get(':id')
   async getUserById(@Param('id') id: string) {
     const output = await this.userProfile.findOne({ id });
@@ -96,6 +100,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Update a user by ID' })
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
@@ -109,6 +114,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Update user password by ID' })
+  @UseGuards(AuthGuard)
   @Patch(':id')
   async updateUserPassword(
     @Param('id') id: string,
@@ -123,6 +129,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Delete a user by ID' })
   @HttpCode(204)
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteUser(@Param('id') id: string) {
     await this.removeUserProfile.remove({ id });
