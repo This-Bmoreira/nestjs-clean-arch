@@ -12,7 +12,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { AuthGuard } from '../../auth/infrastructure/auth.guard';
 import { AuthService } from '../../auth/infrastructure/auth.service';
 import { OutputUser } from '../application/dto/output-user.dto';
@@ -68,40 +75,131 @@ export class UserController {
     return new UserCollectionPresenter(output);
   }
 
-  @ApiOperation({ summary: 'Create a new user' })
   @Post()
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflito de e-mail',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Corpo da requisição com dados inválidos',
+  })
   async createUser(@Body() signupDto: SignupDto) {
     const output = await this.signupCreate.executeSignup(signupDto);
     return UserController.userToResponse(output);
   }
-
-  @ApiOperation({ summary: 'User login' })
-  @HttpCode(200)
   @Post('login')
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Corpo da requisição com dados inválidos',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'E-mail não encontrado',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Credenciais inválidas',
+  })
+  @HttpCode(200)
   async loginUser(@Body() signInDto: SignInDto) {
     const output = await this.signIn.executeSignIn(signInDto);
     return this.authService.generateJwt(output.id);
   }
-
-  @ApiOperation({ summary: 'Get all users' })
-  @UseGuards(AuthGuard)
   @Get()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'object',
+      properties: {
+        meta: {
+          type: 'object',
+          properties: {
+            total: {
+              type: 'number',
+            },
+            currentPage: {
+              type: 'number',
+            },
+            lastPage: {
+              type: 'number',
+            },
+            perPage: {
+              type: 'number',
+            },
+          },
+        },
+        data: {
+          type: 'array',
+          items: { $ref: getSchemaPath(UserPresenter) },
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Parâmetros de consulta inválidos',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @UseGuards(AuthGuard)
   async getAllUsers(@Query() searchParams: DetailUsersDto) {
     const output = await this.usersProfile.findAll(searchParams);
     return UserController.listUsersToResponse(output);
   }
 
-  @ApiOperation({ summary: 'Get a user by ID' })
-  @UseGuards(AuthGuard)
   @Get(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get a user by ID' })
+  @ApiParam({ name: 'id', type: 'uuid', description: 'ID no formato UUID' })
+  @ApiResponse({
+    status: 404,
+    description: 'Id não encontrado',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @UseGuards(AuthGuard)
   async getUserById(@Param('id') id: string) {
     const output = await this.userProfile.findOne({ id });
     return UserController.userToResponse(output);
   }
 
-  @ApiOperation({ summary: 'Update a user by ID' })
-  @UseGuards(AuthGuard)
   @Put(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a user by ID' })
+  @ApiParam({ name: 'id', type: 'uuid', description: 'ID no formato UUID' })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Id não encontrado',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @UseGuards(AuthGuard)
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -113,9 +211,23 @@ export class UserController {
     return UserController.userToResponse(output);
   }
 
-  @ApiOperation({ summary: 'Update user password by ID' })
-  @UseGuards(AuthGuard)
   @Patch(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update user password by ID' })
+  @ApiParam({ name: 'id', type: 'uuid', description: 'ID no formato UUID' })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Id não encontrado',
+  })
+  @ApiResponse({
+    status: 422,
+    description: 'Corpo da requisição com dados inválidos',
+  })
+  @UseGuards(AuthGuard)
   async updateUserPassword(
     @Param('id') id: string,
     @Body() passwordModificationDto: PasswordModificationDto,
@@ -127,10 +239,24 @@ export class UserController {
     return UserController.userToResponse(output);
   }
 
-  @ApiOperation({ summary: 'Delete a user by ID' })
-  @HttpCode(204)
-  @UseGuards(AuthGuard)
   @Delete(':id')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a user by ID' })
+  @ApiParam({ name: 'id', type: 'uuid', description: 'ID no formato UUID' })
+  @ApiResponse({
+    status: 204,
+    description: 'Resposta de confirmação da exclusão',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Acesso não autorizado',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Id não encontrado',
+  })
+  @UseGuards(AuthGuard)
+  @HttpCode(204)
   async deleteUser(@Param('id') id: string) {
     await this.removeUserProfile.remove({ id });
   }
