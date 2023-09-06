@@ -14,8 +14,17 @@ async function bootstrap() {
   );
   const config = new DocumentBuilder()
     .setTitle('Users API')
-    .setDescription('API for user management.')
-    .setVersion('1.0')
+    .setDescription(
+      'Node.js Rest API - NestJs, Typescript, DDD, Clean Architecture and Automated Tests',
+    )
+    .addBearerAuth({
+      description: 'Informar o JWT para autorizar o acesso',
+      name: 'Authorization',
+      scheme: 'Bearer',
+      type: 'http',
+      in: 'Header',
+    })
+    .setVersion('1.0.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
