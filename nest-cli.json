@@ -5,26 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "plugins": [
-      {
-        "name": "@nestjs/swagger",
-        "options": {
-          "classValidatorShim": true,
-          "introspectComments": true,
-          "dtoKeyOfComment": "description",
-          "controllerFileNameSuffix": ".controller.ts",
-          "controllerKeyOfComment": "description",
-          "dtoFileNameSuffix": [
-            ".dto.ts",
-            ".entity.ts"
-          ],
-          "typeFileNameSuffix": [
-            ".input.ts",
-            ".args.ts",
-            ".entity.ts",
-            ".model.ts"
-          ]
-        }
-      }
+      
+      "@nestjs/swagger/plugin"
     ]
   }
 }

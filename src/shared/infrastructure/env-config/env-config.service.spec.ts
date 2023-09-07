@@ -28,4 +28,14 @@ describe('EnvConfigService', () => {
       expect(sut.getNodeEnv()).toBe('test');
     });
   });
+  describe('getJwtSecret method', () => {
+    it('should return the variable JWT_SECRET', () => {
+      expect(sut.getJwtSecret()).toBe('fake_secret');
+    });
+  });
+  describe('getJwtExpiresInSeconds method', () => {
+    it('should return the variable hour', () => {
+      expect(sut.getJwtExpiresInSeconds()).toBe(86400);
+    });
+  });
 });
