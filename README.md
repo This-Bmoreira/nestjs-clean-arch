@@ -47,3 +47,91 @@ O framework NestJS é utilizado para cuidar das funcionalidades de infraestrutur
 ## :memo: Convenção de Commits
 
 **Importante:** Este projeto segue a convenção de **Conventional Commits** para estruturar as mensagens de commit.
+
+## :clipboard: Como configurar
+
+### :hammer: Crie os arquivos de configuração
+
+- Na raiz do projeto, crie dois arquivos chamados `.env.test` e `.env.development` e adicione as configurações fornecidas:
+
+No `.env.test`
+
+```env
+PORT=3000
+NODE_ENV=test
+DATABASE_URL="postgresql://postgres:docekr@localhost:5433/projectdb?schema=test"
+
+JWT_SECRET=fake_secret
+JWT_EXPIRES_IN=86400
+```
+
+No `.env.development`
+
+```env
+PORT=3000
+NODE_ENV=development
+DATABASE_URL="postgresql://postgres:docekr@localhost:5433/projectdb?schema=public"
+
+JWT_SECRET=fake_secret
+JWT_EXPIRES_IN=86400
+```
+
+### :hammer: Configurar o banco de dados
+
+- Execute o seguinte comando para criar um container Docker com as configurações básicas do banco de dados:
+
+```bash
+docker compose up -d
+```
+
+### :hammer: Instale as dependências do projeto
+
+- Baixe todas as dependências do projeto executando o comando:
+
+```bash
+npm install
+```
+
+### :hammer: Gerar os modelos Prisma
+
+- Execute o seguinte comando para gerar os modelos Prisma com base no arquivo de esquema `schema.prisma`:
+
+```bash
+npx prisma generate --schema src/shared/infrastructure/database/prisma/schema.prisma
+```
+
+### :hammer: Inicie o projeto
+
+- Para iniciar o projeto, execute o comando:
+
+```bash
+npm run dev
+```
+
+### :white_check_mark: Acesse a documentação Swagger
+
+- Acesse a documentação Swagger do projeto na seguinte URL:
+
+```url
+http://localhost:3000/api
+```
+
+### :white_check_mark: Execute os testes
+
+- Para testes unitários:
+
+```bash
+npm run test:unit
+```
+
+- Para testes de integração:
+
+```bash
+npm run test:int
+```
+
+- Para testes de ponta a ponta (e2e):
+
+```bash
+npm run test:e2e
+```
